@@ -1,0 +1,265 @@
+import java.util.*;
+import java.io.*;
+public class pass1
+{
+static int address=0;
+static int sadd[]=new int[10];
+static int ladd[]=new int[10];
+public static void main(String args[])
+{
+BufferedReader br;
+OutputStream oo;
+String input=null;
+String IS[]={&quot;ADD&quot;,&quot;SUB&quot;,&quot;MUL&quot;,&quot;MOV&quot;};
+String UserReg[]={&quot;AREG&quot;,&quot;BREG&quot;,&quot;CREG&quot;,&quot;DREG&quot;};
+String AD[]={&quot;START&quot;,&quot;END&quot;};
+String DL[]={&quot;DC&quot;,&quot;DS&quot;};
+int lc=0;
+int scount=0,lcount=0;
+int flag=0,flag2=0,stored=0;
+String tokens[]=new String[30];
+String tt=null;
+String sv[]=new String[10];
+String lv[]=new String[10];
+try
+{
+br=new BufferedReader(new
+FileReader(&quot;initial.txt&quot;));
+File f = new File(&quot;IM.txt&quot;);
+File f1 = new File(&quot;ST.txt&quot;);
+File f2 = new File(&quot;LT.txt&quot;);
+PrintWriter p = new PrintWriter(f);
+PrintWriter p1 = new PrintWriter(f1);
+PrintWriter p2 = new PrintWriter(f2);
+int k=0,l=0;
+while ((input = br.readLine()) != null)
+{
+StringTokenizer st = new
+StringTokenizer(input,&quot; &quot;);
+while (st.hasMoreTokens())
+{
+tt=st.nextToken();
+//System.out.println(tt);
+if(tt.matches(&quot;\\d*&quot;)&amp;&amp; tt.length() &gt; 2)
+{
+lc=Integer.parseInt(tt);
+p.println(lc);
+address=lc-1;
+}
+else
+{
+for(int i=0;i&lt;AD.length;i++)
+{
+if(tt.equals(AD[i]))
+{
+p.print(&quot;AD &quot;+(i+1)+&quot; &quot;);
+}
+}
+for(int i=0;i&lt;IS.length;i++)
+{
+if(tt.equals(IS[i]))
+{
+p.print(&quot;IS &quot;+(i+1)+&quot; &quot;);
+}
+}
+for(int i=0;i&lt;UserReg.length;i++)
+{
+if(tt.equals(UserReg[i]))
+{
+p.print((i+1)+&quot; &quot;);
+flag=1;
+}
+}
+for(int i=0;i&lt;DL.length;i++)
+{
+if(tt.equals(DL[i]))
+{
+p.print(&quot;DL &quot;+(i+1)+&quot; &quot;);
+}
+}
+if(tt.length()==1 &amp;&amp; !(st.hasMoreTokens()) &amp;&amp; flag==1)
+{
+if ( Arrays.asList(sv).contains(tt) )
+{
+for(int i=0;i&lt;scount;i++)
+{
+if(sv[i].equals(tt))
+{
+p.print(&quot;S&quot;+i);
+flag2=1;
+}
+else
+{
+flag2=0;
+}
+}
+}
+else
+{
+p.print(&quot;S&quot;+scount);
+sv[scount]=tt;
+flag2=1;
+scount++;
+}
+}
+if(tt.length()==1 &amp;&amp; (st.hasMoreTokens()))
+{
+p.print(tt+&quot; &quot;);
+sadd[k]=address;k++;
+}
+if(tt.charAt(0)==&#39;=&#39;)
+{
+p.print(&quot;L&quot;+lcount);
+lv[lcount]=tt;
+lcount++;
+}
+if(!st.hasMoreTokens())
+{
+p.println();
+}
+if(tt.equals(&quot;DS&quot;))
+{
+int a=Integer.parseInt(st.nextToken());
+address=address+a-1;
+p.println();
+}
+}
+}
+//System.out.println();
+address++;
+} p.close();
+address--;
+for(int i=0;i&lt;lcount;i++)
+{
+ladd[i]=address;
+address++;
+}
+for(int i=0;i&lt;scount;i++)
+{
+p1.println(i+&quot;\t&quot;+sv[i]+&quot;\t&quot;+sadd[i]);
+}p1.close();
+for(int i=0;i&lt;lcount;i++)
+{
+p2.println(i+&quot;\t&quot;+lv[i]+&quot;\t&quot;+ladd[i]);
+}p2.close();
+}
+catch(Exception e)
+{
+e.printStackTrace();
+}}}
+
+-----------------------------------------------------------------------------------------------------------------
+
+import java.util.*;
+import java.io.*;
+public class macro
+{
+ public static void main(String args[])
+ {
+ BufferedReader br;
+ OutputStream oo;
+ String input=null;
+ String tt=null;
+ String arg=null;
+ String macroTokens=null;
+ String mnt[]=new String[10];
+ String mdt[]=new String[20];
+ String AR[]=new String[20];
+ int macroindex[]=new int[10];
+ int mcount=0,arg_count=0;
+ int middlecount=0;
+ int index=1;
+ int macro_enc=0;
+ 
+ try
+ {
+ br=new BufferedReader(new FileReader("Input.txt"));
+ File f3 = new File("mnt.txt");
+ File f4 = new File("mdt.txt");
+ File f5 = new File("adt.txt");
+ PrintWriter p3 = new PrintWriter(f3);
+ PrintWriter p4 = new PrintWriter(f4);
+PrintWriter p5 = new PrintWriter(f5);
+ while ((input = br.readLine()) != null)
+ {
+ StringTokenizer st = new StringTokenizer(input," "); 
+ tt=st.nextToken(); 
+ if(tt.equals("MACRO"))
+ {
+ macro_enc=1;
+ tt=st.nextToken();
+ mnt[mcount]=tt;
+ macroindex[mcount]=index;
+ p3.println(mnt[mcount]+"\t"+macroindex[mcount]);
+ p4.println(mnt[mcount]);
+ p5.println(mnt[mcount]);
+ mcount++;
+ 
+ tt=st.nextToken();
+ StringTokenizer t = new StringTokenizer(tt,",");
+ while (t.hasMoreTokens())
+ {
+ arg=t.nextToken();
+ if(arg.charAt(0)=='&')
+ {
+ AR[arg_count]=arg;
+ p5.println(AR[arg_count]);
+ arg_count++;
+ }
+ }
+ }
+ 
+ else
+ {
+ if(macro_enc==1)
+ {
+ if(input.equals("MEND"))
+ {
+ macro_enc=0;
+ p4.println("MEND");
+ }
+ else
+ {
+ StringTokenizer t=new StringTokenizer(input," ");
+ while(t.hasMoreTokens())
+ {
+ macroTokens=t.nextToken();
+ for(int i=0;i<arg_count;i++)
+ {
+ if(macroTokens.charAt(0)=='&' && macroTokens.equals(AR[i]))
+ {
+ p4.print("AR"+i);
+ }
+ }
+ if(macroTokens.charAt(0)=='&'){}
+ else
+ {
+ p4.print(macroTokens+" ");
+ }
+ if(!t.hasMoreTokens())
+ {
+ p4.println();
+ }
+ 
+ 
+ }
+ }
+ 
+ }
+ } 
+ index++;
+ } 
+ p3.close();
+ p4.close();
+ p5.close();
+ 
+ 
+ 
+ }
+ catch(Exception e)
+ {
+ e.printStackTrace();
+ }
+ }
+ 
+} 
